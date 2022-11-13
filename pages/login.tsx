@@ -31,7 +31,7 @@ const Login = () => {
   return (
     <div className="relative flex h-screen w-screen flex-col bg-black md:items-center md:justify-center md:bg-transparent">
       <Head>
-        <title>next app learning</title>
+        <title>Login to app</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Image
