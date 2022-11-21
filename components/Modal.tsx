@@ -1,6 +1,6 @@
 import {
+  CheckIcon,
   ExclamationCircleIcon,
-  InformationCircleIcon,
   PlusIcon,
   ThumbUpIcon,
   VolumeOffIcon,
@@ -8,12 +8,23 @@ import {
 } from "@heroicons/react/outline"
 import { XIcon } from "@heroicons/react/solid"
 import MuiModal from "@mui/material/Modal"
+import {
+  collection,
+  deleteDoc,
+  doc,
+  DocumentData,
+  onSnapshot,
+  setDoc,
+} from "firebase/firestore"
 import { useEffect, useState } from "react"
-import { FaPlay } from "react-icons/fa"
+import toast, { Toaster } from "react-hot-toast"
+import { FaPlay, FaStop } from "react-icons/fa"
 import ReactPlayer from "react-player/lazy"
 import { useRecoilState } from "recoil"
 import { modalState, movieState } from "../atoms/modalAtom"
-import { Element, Genre } from "../typings"
+import { useAuth } from "../hooks/useAuth"
+import { db } from "../lib/firebase"
+import { Element, Genre, Movie } from "../typings"
 
 const Modal = () => {
   const [showModal, setShowModal] = useRecoilState(modalState)
@@ -21,6 +32,21 @@ const Modal = () => {
   const [trailer, setTrailer] = useState("")
   const [genres, setGenres] = useState<Genre[]>([])
   const [muted, setMuted] = useState(true)
+  const [addedToList, setAddedToList] = useState(false)
+  const [isPlay, setIsPlay] = useState(true)
+  const [movies, setMovies] = useState<DocumentData[] | Movie[]>([])
+
+  const { user } = useAuth()
+
+  const toastStyle = {
+    background: "white",
+    color: "black",
+    fontWeight: "bold",
+    fontSize: "16px",
+    padding: "15px",
+    borderRadius: "9999px",
+    maxWidth: "1000px",
+  }
 
   useEffect(() => {
     if (!movie) return
@@ -54,7 +80,52 @@ const Modal = () => {
     setShowModal(false)
   }
 
-  console.log(trailer)
+  useEffect(() => {
+    if (user) {
+      return onSnapshot(
+        collection(db, "customers", user.uid, "myList"),
+        (snapshot) => setMovies(snapshot.docs)
+      )
+    }
+  }, [db, movie?.id])
+
+  // Check if the movie is already in the user's list
+  useEffect(
+    () =>
+      setAddedToList(
+        movies.findIndex((result) => result.data().id === movie?.id) !== -1
+      ),
+    [movies]
+  )
+
+  const handleList = async () => {
+    if (addedToList) {
+      await deleteDoc(
+        doc(db, "customers", user!.uid, "myList", movie?.id.toString()!)
+      )
+
+      toast(
+        `${movie?.title || movie?.original_name} has been removed from My List`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      )
+    } else {
+      await setDoc(
+        doc(db, "customers", user!.uid, "myList", movie?.id.toString()!),
+        { ...movie }
+      )
+
+      toast(
+        `${movie?.title || movie?.original_name} has been added to My List`,
+        {
+          duration: 8000,
+          style: toastStyle,
+        }
+      )
+    }
+  }
 
   return (
     <MuiModal
@@ -63,6 +134,7 @@ const Modal = () => {
       className="fixed !top-7 left-0 right-0 z-50 mx-auto w-full max-w-5xl overflow-hidden overflow-y-scroll rounded-md scrollbar-hide"
     >
       <>
+        <Toaster position="bottom-center" />
         <button
           onClick={handleClose}
           className="modalButton absolute right-5 top-5 !z-40 h-9 w-9 border-none bg-[#181818] hover:bg-[#181818]"
@@ -78,7 +150,7 @@ const Modal = () => {
               width="100%"
               height="100%"
               style={{ position: "absolute", top: "0", left: "0" }}
-              playing
+              playing={isPlay}
               muted={muted}
             />
           ) : (
@@ -91,13 +163,27 @@ const Modal = () => {
           )}
           <div className="absolute bottom-10 flex w-full items-center justify-between px-10">
             <div className="flex space-x-2">
-              <button className="flex items-center gap-x-2 rounded bg-white px-8 text-xl font-bold text-black transition hover:bg-[#e6e6e6]">
-                <FaPlay className="h-7 w-7 text-black" />
-                Play
+              <button
+                className="flex items-center gap-x-2 rounded bg-white px-8 text-xl font-bold text-black transition hover:bg-[#e6e6e6]"
+                onClick={() => setIsPlay(!isPlay)}
+              >
+                {isPlay ? (
+                  <>
+                    <FaStop className="h-5 w-5 text-black" /> Stop
+                  </>
+                ) : (
+                  <>
+                    <FaPlay className="h-5 w-5 text-black" /> Play
+                  </>
+                )}
               </button>
 
-              <button className="modalButton">
-                <PlusIcon className="h-7 w-7" />
+              <button className="modalButton" onClick={handleList}>
+                {addedToList ? (
+                  <CheckIcon className="h-7 w-7" />
+                ) : (
+                  <PlusIcon className="h-7 w-7" />
+                )}
               </button>
 
               <button className="modalButton">
