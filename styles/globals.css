@@ -69,4 +69,8 @@
   .btnSearch:focus ~ .inputSearch {
     @apply w-[200px] pl-[6px] rounded-none bg-transparent border-b-[1px] border-b-[#fff]/50 transition-all duration-500 ease-search-in-out max-lg:w-[140px]
   }
+
+  .cardContainer:hover .cardText {
+    @apply opacity-100
+  }
 }

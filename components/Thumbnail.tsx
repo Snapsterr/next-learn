@@ -9,11 +9,13 @@ interface Props {
 }
 
 const Thumbnail = ({ movie }: Props) => {
+  console.log(movie)
+
   const [showModal, setShowModal] = useRecoilState(modalState)
   const [currentMovie, setCurrentMovie] = useRecoilState(movieState)
   return (
     <div
-      className="relative h-28 min-w-[180px] cursor-pointer transition duration-200 ease-out md:h-36 md:min-w-[260px] md:hover:scale-105"
+      className="cardContainer relative h-28 min-w-[180px] cursor-pointer transition duration-200 ease-out md:h-36 md:min-w-[260px] md:hover:scale-105"
       onClick={() => {
         setCurrentMovie(movie)
         setShowModal(true)
@@ -26,6 +28,11 @@ const Thumbnail = ({ movie }: Props) => {
         className="rounded-sm object-cover md:rounded"
         layout="fill"
       />
+      <div className="cardText w-full h-full bg-[#000]/60 transition-all duration-500 ease opacity-0 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white text-base tracking-wider p-[16px,32px]">
+          {movie?.name || movie?.original_name || movie?.original_title}
+        </div>
+      </div>
     </div>
   )
 }

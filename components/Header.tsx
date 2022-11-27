@@ -51,7 +51,7 @@ const Header = () => {
             New & Popular
           </Link>
           <Link className="headerLink" href="/mylist">
-            My list
+            My List
           </Link>
         </ul>
       </div>

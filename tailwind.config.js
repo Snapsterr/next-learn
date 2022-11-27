@@ -14,6 +14,15 @@ module.exports = {
       transitionTimingFunction: {
         "search-in-out": "cubic-bezier(0, 0.25, 0.5, 1)",
       },
+      animation: {
+        slideDown: "slideDown 0.6s ease-out",
+      },
+      keyframes: {
+        slideDown: {
+          "0%": { opacity: 0, transform: "translateY(-500%)" },
+          "100%": { opacity: 1, transform: "translateY(0%)" },
+        },
+      },
     },
   },
   plugins: [
