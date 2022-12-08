@@ -1,8 +1,16 @@
-const Loader = ({ color }: { color: string }) => {
+const Loader = ({
+  color,
+  width,
+  height,
+}: {
+  color: string
+  width: string
+  height: string
+}) => {
   return (
     <svg
       role="status"
-      className={`m-auto h-7 w-7 animate-spin text-gray-200 dark:text-transparent ${color}`}
+      className={`m-auto h-${height} w-${width} animate-spin text-gray-200 dark:text-transparent ${color}`}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

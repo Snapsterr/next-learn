@@ -4,19 +4,15 @@ import React from "react"
 interface Props {
   currentPage: number
   totalPages: number
-  handleNextPage: (page: number) => void
-  handlePrevPage: (page: number) => void
+  handleChange: (event: React.ChangeEvent<unknown>, page: number) => void
 }
-const PaginationRange = ({
-  currentPage,
-  totalPages,
-  handlePrevPage,
-  handleNextPage,
-}: Props) => {
+const PaginationRange = ({ currentPage, totalPages, handleChange }: Props) => {
   return (
     <div className="flex justify-center items-center h-[110px] max-sm:h-[85px]">
       <Pagination
         count={totalPages}
+        page={currentPage}
+        onChange={handleChange}
         defaultPage={1}
         color="primary"
         size="large"
