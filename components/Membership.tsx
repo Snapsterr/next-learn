@@ -26,7 +26,7 @@ const Membership = () => {
           onClick={manageSubscription}
         >
           {isBillingLoading ? (
-            <Loader color="dark:fill-[#e50914]" />
+            <Loader color="dark:fill-[#e50914]" width="7" height="7" />
           ) : (
             "Cancel Membership"
           )}
