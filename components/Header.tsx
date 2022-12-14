@@ -1,11 +1,20 @@
 import { BellIcon, SearchIcon } from "@heroicons/react/solid"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useAuth } from "../hooks/useAuth"
+import useOnClickOutside from "../hooks/useOnClickOutside"
+import useDebounce from "../hooks/useDebounce"
 import { BasicMenu } from "./BasicMenu"
+import SearchResult from "./SearchResult"
+import Modal from "./Modal"
+import { useRecoilValue } from "recoil"
+import { modalState } from "../atoms/modalAtom"
+import SearchField from "./SearchField"
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
+
+  const showModal = useRecoilValue(modalState)
 
   const { logout } = useAuth()
 
@@ -57,16 +66,7 @@ const Header = () => {
       </div>
 
       <div className="flex items-center space-x-4 text-sm font-light">
-        <div className="w-fit h-fit relative">
-          <button className="btnSearch w-8 h-8 px-1 border-none outline-none cursor-pointer absolute right-0 bg-transparent hover:text-[#b3b3b3]">
-            <SearchIcon className="hidden h-6 w-6 sm:inline" />
-          </button>
-          <input
-            type="text"
-            className="inputSearch h-8 w-8 border-b-[1px] p-[16px] border-b-transparent text-base bg-transparent tracking-wider outline-0 transition-all duration-500 ease-in-out text-[#fff] text-[14px] placeholder:text-[#fff]/50 placeholder:text-[14px] placeholder:tracking-wider placeholder:font-light focus:w-[200px] focus:pl-[6px] focus:rounded-none focus:bg-transparent focus:border-b-[1px] focus:border-b-[#fff]/50 max-lg:focus:w-[140px]"
-            placeholder="Type to Search..."
-          />
-        </div>
+        <SearchField />
         <p className="hidden lg:inline">Kids</p>
         <BellIcon className="h-6 w-6" />
         <Link href="/account">

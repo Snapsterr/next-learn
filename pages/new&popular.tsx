@@ -46,11 +46,11 @@ const NewAndPopular = ({ movies, totalPages }: Props) => {
       <main>
         {loading ? (
           <div className="w-full h-[80vh] p-10 relative">
-            <div className="m-auto w-[50vw] h-[50vh] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="m-auto w-[70vw] h-[50vh] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <Loader
                 color="dark:fill-gray-300"
-                width="[50vw]"
-                height="[50vh]"
+                width="[20vw]"
+                height="[20vh]"
               />
             </div>
           </div>

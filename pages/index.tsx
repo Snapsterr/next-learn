@@ -43,6 +43,7 @@ const Home = ({
   const subscription = useSubscription(user)
   const movie = useRecoilValue(movieState)
   const list = useList(user?.uid)
+  console.log(movie)
 
   if (loading || subscription === null) return null
 
@@ -62,7 +63,7 @@ const Home = ({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <main className="relative pl-4 pb-24 lg:space-y-24 lg:pl-16 max-sm:pb-0 max-md:pb-8">
+      <main className="relative pl-4 pr-4 pb-24 lg:space-y-24 lg:pl-10 lg:pr-10 max-sm:pb-0 max-md:pb-8">
         <Banner netflixOriginals={netflixOriginals} />
         <section className="md:space-y-24">
           <Row title="Trending Now" movies={trendingNow} />

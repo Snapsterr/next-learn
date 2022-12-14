@@ -16,11 +16,16 @@ module.exports = {
       },
       animation: {
         slideDown: "slideDown 0.6s ease-out",
+        customSpin: "customSpin 1s linear infinite",
       },
       keyframes: {
         slideDown: {
           "0%": { opacity: 0, transform: "translateY(-500%)" },
           "100%": { opacity: 1, transform: "translateY(0%)" },
+        },
+        customSpin: {
+          "0%": { transform: "translate(-50%, -50%) rotate(0deg)" },
+          "100%": { transform: "translate(-50%, -50%) rotate(360deg)" },
         },
       },
     },

@@ -10,7 +10,7 @@ const Loader = ({
   return (
     <svg
       role="status"
-      className={`m-auto h-${height} w-${width} animate-spin text-gray-200 dark:text-transparent ${color}`}
+      className={`absolute top-1/2 left-1/2 h-${height} w-${width} animate-customSpin text-gray-200 dark:text-transparent ${color}`}
       viewBox="0 0 100 101"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

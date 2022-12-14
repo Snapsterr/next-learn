@@ -50,8 +50,8 @@ const Movies = ({ movies, totalPages }: Props) => {
             <div className="m-auto w-[50vw] h-[50vh] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
               <Loader
                 color="dark:fill-gray-300"
-                width="[50vw]"
-                height="[50vh]"
+                width="[40vw]"
+                height="[40vh]"
               />
             </div>
           </div>
