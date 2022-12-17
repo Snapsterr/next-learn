@@ -23,6 +23,10 @@ export interface Movie {
   vote_count: number
 }
 
+export interface Notifications extends Movie {
+  type?: string
+}
+
 export interface Element {
   type:
     | 'Bloopers'

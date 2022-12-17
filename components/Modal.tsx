@@ -21,7 +21,11 @@ import toast, { Toaster } from "react-hot-toast"
 import { FaPlay, FaStop } from "react-icons/fa"
 import ReactPlayer from "react-player/lazy"
 import { useRecoilState } from "recoil"
-import { modalState, movieState } from "../atoms/modalAtom"
+import {
+  modalState,
+  movieState,
+  notificationsCountState,
+} from "../atoms/modalAtom"
 import { useAuth } from "../hooks/useAuth"
 import { db } from "../lib/firebase"
 import { Element, Genre, Movie } from "../typings"
@@ -29,6 +33,9 @@ import { Element, Genre, Movie } from "../typings"
 const Modal = () => {
   const [showModal, setShowModal] = useRecoilState(modalState)
   const [movie, setMovie] = useRecoilState(movieState)
+  const [notificationsCount, setNotificationsCount] = useRecoilState(
+    notificationsCountState
+  )
   const [trailer, setTrailer] = useState("")
   const [genres, setGenres] = useState<Genre[]>([])
   const [muted, setMuted] = useState(true)
@@ -104,6 +111,19 @@ const Modal = () => {
         doc(db, "customers", user!.uid, "myList", movie?.id.toString()!)
       )
 
+      await setDoc(
+        doc(
+          db,
+          "customers",
+          user!.uid,
+          "notifications",
+          notificationsCount.toString()
+        ),
+        { ...movie, type: "removed" }
+      )
+
+      setNotificationsCount((prev) => prev + 1)
+
       toast(
         `${movie?.title || movie?.original_name} has been removed from My List`,
         {
@@ -116,6 +136,19 @@ const Modal = () => {
         doc(db, "customers", user!.uid, "myList", movie?.id.toString()!),
         { ...movie }
       )
+
+      await setDoc(
+        doc(
+          db,
+          "customers",
+          user!.uid,
+          "notifications",
+          notificationsCount.toString()
+        ),
+        { ...movie, type: "added" }
+      )
+
+      setNotificationsCount((prev) => prev + 1)
 
       toast(
         `${movie?.title || movie?.original_name} has been added to My List`,

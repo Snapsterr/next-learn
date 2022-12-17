@@ -12,18 +12,18 @@ interface Props {
 const SearchResult = ({ isSearching, searchedData }: Props) => {
   const [showModal, setShowModal] = useRecoilState(modalState)
   const [currentMovie, setCurrentMovie] = useRecoilState(movieState)
-  console.log("resu", searchedData)
+
   return (
     <div
-      className={` absolute top-[33px] w-full ${
+      className={`absolute top-[33px] w-full ${
         isSearching && searchedData.length ? "block " : "hidden"
       }`}
     >
-      <div className="searchResultWrapper h-[300px] overflow-y-scroll">
+      <div className="scrollbarModalHeader h-[300px] overflow-y-scroll">
         <div className="flex flex-col items-stretch justify-start">
           {searchedData.map((movie) => (
             <div
-              className="searchResultBlock relative w-full h-[30px] flex flex-row justify-start items-center cursor-pointer bg-[rgba(44,44,44,0.5)] hover:bg-[rgba(44,44,44,0.7)]"
+              className="searchResultBlock relative w-full h-[30px] flex flex-row justify-start items-center cursor-pointer bg-[rgba(44,44,44,0.5)] hover:bg-[rgba(44,44,44,0.7)] border-b-[1px] border-b-[#fff]/50 last:border-b-0"
               key={movie.id}
               onClick={() => {
                 setCurrentMovie(movie)

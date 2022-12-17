@@ -36,8 +36,8 @@ const NewAndPopular = ({ movies, totalPages }: Props) => {
     <>
       <Head>
         <title>
-          {showModal ? movie?.title || movie?.original_name : "Home"} - next
-          learn
+          {showModal ? movie?.title || movie?.original_name : "New and Popular"}{" "}
+          - next learn
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>

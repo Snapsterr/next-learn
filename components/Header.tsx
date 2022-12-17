@@ -1,22 +1,11 @@
-import { BellIcon, SearchIcon } from "@heroicons/react/solid"
 import Link from "next/link"
-import { useEffect, useState, useRef } from "react"
-import { useAuth } from "../hooks/useAuth"
-import useOnClickOutside from "../hooks/useOnClickOutside"
-import useDebounce from "../hooks/useDebounce"
+import { useEffect, useState } from "react"
 import { BasicMenu } from "./BasicMenu"
-import SearchResult from "./SearchResult"
-import Modal from "./Modal"
-import { useRecoilValue } from "recoil"
-import { modalState } from "../atoms/modalAtom"
 import SearchField from "./SearchField"
+import Notification from "./Notification"
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
-
-  const showModal = useRecoilValue(modalState)
-
-  const { logout } = useAuth()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -40,7 +29,7 @@ const Header = () => {
         <img
           src="https://rb.gy/ulxxee"
           width={100}
-          height={100}
+          height={28}
           className="cursor-pointer object-contain"
         />
 
@@ -68,12 +57,12 @@ const Header = () => {
       <div className="flex items-center space-x-4 text-sm font-light">
         <SearchField />
         <p className="hidden lg:inline">Kids</p>
-        <BellIcon className="h-6 w-6" />
+        <Notification />
         <Link href="/account">
           <img
             src="https://rb.gy/g1pwyx"
             alt=""
-            className="cursor-pointer rounded"
+            className="w-[32px] h-[32px] cursor-pointer rounded"
           />
         </Link>
       </div>

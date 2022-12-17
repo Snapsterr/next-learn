@@ -11,3 +11,8 @@ export const movieState = atom<Movie | DocumentData | null>({
   key: 'movieState',
   default: null,
 })
+
+export const notificationsCountState = atom<number>({
+  key: 'notificationsCountState',
+  default: 0,
+})
