@@ -47,8 +47,8 @@ const Notification = () => {
 
   const clearNotifications = async () => {
     try {
+      setNotificationsIdList([])
       setNotificationsCount(0)
-
       await notificationsIdList.map((notificationId) => {
         deleteDoc(
           doc(db, "customers", user!.uid, "notifications", notificationId)
@@ -75,6 +75,8 @@ const Notification = () => {
   useEffect(() => {
     getNotifications()
   }, [notificationsCount, isOpen])
+
+  console.log("2213", notificationsCount, notificationsIdList)
 
   return (
     <div

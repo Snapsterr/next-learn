@@ -1,8 +1,15 @@
+import { setDefaultResultOrder } from "dns"
 import {
   createUserWithEmailAndPassword,
+  EmailAuthCredential,
+  EmailAuthProvider,
+  getAuth,
   onAuthStateChanged,
+  reauthenticateWithCredential,
   signInWithEmailAndPassword,
   signOut,
+  updateEmail,
+  updatePassword,
   User,
 } from "firebase/auth"
 
@@ -15,6 +22,11 @@ interface IAuth {
   signUp: (email: string, password: string) => Promise<void>
   signIn: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
+  updateUserEmail: (currentPassword: string, newEmail: string) => Promise<void>
+  updateUserPassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<void>
   error: string | null
   loading: boolean
 }
@@ -24,6 +36,8 @@ const AuthContext = createContext<IAuth>({
   signUp: async () => {},
   signIn: async () => {},
   logout: async () => {},
+  updateUserEmail: async () => {},
+  updateUserPassword: async () => {},
   error: null,
   loading: false,
 })
@@ -45,6 +59,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           // Logged in...
+          setError(null)
           setUser(user)
           setLoading(false)
         } else {
@@ -96,6 +111,50 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       .finally(() => setLoading(false))
   }
 
+  const updateUserEmail = async (currentPassword: string, newEmail: string) => {
+    setLoading(true)
+    setError(null)
+    if (user && user.email !== null) {
+      let credential = EmailAuthProvider.credential(user.email, currentPassword)
+      console.log("auth2", user)
+
+      await reauthenticateWithCredential(user, credential)
+        .then(async (userCredential) => {
+          setUser(userCredential.user)
+          await updateEmail(userCredential.user, newEmail).catch((error) => {
+            setError(error.message)
+            console.log("error", error)
+          })
+        })
+        .catch((error) => {
+          setError(error.message)
+          console.log("error", error)
+        })
+        .finally(() => setLoading(false))
+    }
+  }
+
+  const updateUserPassword = async (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    setLoading(true)
+    if (user && user.email !== null) {
+      let credential = EmailAuthProvider.credential(user.email, currentPassword)
+      console.log("auth2", user)
+
+      await reauthenticateWithCredential(user, credential)
+        .then(async (userCredential) => {
+          setUser(userCredential.user)
+          await updatePassword(userCredential.user, newPassword).catch(
+            (error) => alert(error.message)
+          )
+        })
+        .catch((error) => alert(error.message))
+        .finally(() => setLoading(false))
+    }
+  }
+
   const memoedValue = useMemo(
     () => ({
       user,
@@ -104,6 +163,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       logout,
       loading,
       error,
+      updateUserEmail,
+      updateUserPassword,
     }),
     [user, loading]
   )

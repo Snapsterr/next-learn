@@ -2,7 +2,6 @@ import { getProducts, Product } from "@stripe/firestore-stripe-payments"
 import { GetStaticProps } from "next"
 import Head from "next/head"
 import Link from "next/link"
-import React from "react"
 import Membership from "../components/Membership"
 import { useAuth } from "../hooks/useAuth"
 import useSubscription from "../hooks/useSubscription"
@@ -13,10 +12,9 @@ interface Props {
 }
 
 const Account = ({ products }: Props) => {
-  console.log(products)
-
   const { user, logout } = useAuth()
   const subscription = useSubscription(user)
+
   return (
     <div>
       <Head>

@@ -92,7 +92,9 @@ const Plans = ({ products }: Props) => {
             onClick={subscribeToPlan}
           >
             {isBillingLoading ? (
-              <Loader color="dark:fill-gray-300" width="7" height="7" />
+              <div className="w-full h-7 relative">
+                <Loader color="dark:fill-gray-300" width="7" height="7" />
+              </div>
             ) : (
               "Subscribe"
             )}

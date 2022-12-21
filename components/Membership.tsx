@@ -1,8 +1,11 @@
-import React, { useState } from "react"
+import { useState } from "react"
+import { useRecoilState } from "recoil"
+import { modalState } from "../atoms/modalAtom"
 import { useAuth } from "../hooks/useAuth"
 import useSubscription from "../hooks/useSubscription"
 import { goToBillingPortal } from "../lib/stripe"
 import Loader from "./Loader"
+import MembershipLink from "./MembershipLink"
 
 const Membership = () => {
   const { user } = useAuth()
@@ -40,8 +43,16 @@ const Membership = () => {
             <p className="text-[gray]">Password: ********</p>
           </div>
           <div className="md:text-right">
-            <p className="membershipLink">Change email</p>
-            <p className="membershipLink">Change password</p>
+            <MembershipLink
+              membershipText={"Change email"}
+              updateType={"updateEmail"}
+              inputType={"email"}
+            />
+            <MembershipLink
+              membershipText={"Change password"}
+              updateType={"updatePassword"}
+              inputType={"password"}
+            />
           </div>
         </div>
 
