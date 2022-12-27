@@ -1,9 +1,6 @@
-import { setDefaultResultOrder } from "dns"
 import {
   createUserWithEmailAndPassword,
-  EmailAuthCredential,
   EmailAuthProvider,
-  getAuth,
   onAuthStateChanged,
   reauthenticateWithCredential,
   signInWithEmailAndPassword,
@@ -15,6 +12,7 @@ import {
 
 import { useRouter } from "next/router"
 import { createContext, useContext, useEffect, useMemo, useState } from "react"
+import { toast } from "react-hot-toast"
 import { auth } from "../lib/firebase"
 
 interface IAuth {
@@ -29,6 +27,7 @@ interface IAuth {
   ) => Promise<void>
   error: string | null
   loading: boolean
+  isChanged: boolean
 }
 
 const AuthContext = createContext<IAuth>({
@@ -40,10 +39,21 @@ const AuthContext = createContext<IAuth>({
   updateUserPassword: async () => {},
   error: null,
   loading: false,
+  isChanged: false,
 })
 
 interface AuthProviderProps {
   children: React.ReactNode
+}
+
+const toastStyle = {
+  background: "white",
+  color: "black",
+  fontWeight: "bold",
+  fontSize: "16px",
+  padding: "15px",
+  borderRadius: "9999px",
+  maxWidth: "1000px",
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -51,6 +61,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [initialLoading, setInitialLoading] = useState(true)
   const [user, setUser] = useState<User | null>(null)
   const [error, setError] = useState(null)
+  const [isChanged, setIsChanged] = useState<boolean>(false)
 
   const router = useRouter()
 
@@ -114,17 +125,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const updateUserEmail = async (currentPassword: string, newEmail: string) => {
     setLoading(true)
     setError(null)
+    setIsChanged(false)
     if (user && user.email !== null) {
       let credential = EmailAuthProvider.credential(user.email, currentPassword)
-      console.log("auth2", user)
 
       await reauthenticateWithCredential(user, credential)
         .then(async (userCredential) => {
           setUser(userCredential.user)
-          await updateEmail(userCredential.user, newEmail).catch((error) => {
-            setError(error.message)
-            console.log("error", error)
-          })
+          await updateEmail(userCredential.user, newEmail)
+            .then(() => {
+              setIsChanged(true)
+              toast(`email has been successfully changed on ${newEmail}`, {
+                duration: 6000,
+                style: toastStyle,
+              })
+            })
+            .catch((error) => {
+              // setError(error.message)
+              console.log("error", error)
+            })
         })
         .catch((error) => {
           setError(error.message)
@@ -139,6 +158,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     newPassword: string
   ) => {
     setLoading(true)
+    setIsChanged(false)
     if (user && user.email !== null) {
       let credential = EmailAuthProvider.credential(user.email, currentPassword)
       console.log("auth2", user)
@@ -146,9 +166,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await reauthenticateWithCredential(user, credential)
         .then(async (userCredential) => {
           setUser(userCredential.user)
-          await updatePassword(userCredential.user, newPassword).catch(
-            (error) => alert(error.message)
-          )
+          await updatePassword(userCredential.user, newPassword)
+            .then(() => {
+              setIsChanged(true)
+              toast(`password has been successfully changed`, {
+                duration: 6000,
+                style: toastStyle,
+              })
+            })
+            .catch((error) => alert(error.message))
         })
         .catch((error) => alert(error.message))
         .finally(() => setLoading(false))
@@ -165,6 +191,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       error,
       updateUserEmail,
       updateUserPassword,
+      isChanged,
     }),
     [user, loading]
   )

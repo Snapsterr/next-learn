@@ -1,6 +1,4 @@
 import { useState } from "react"
-import { useRecoilState } from "recoil"
-import { modalState } from "../atoms/modalAtom"
 import { useAuth } from "../hooks/useAuth"
 import useSubscription from "../hooks/useSubscription"
 import { goToBillingPortal } from "../lib/stripe"
@@ -29,7 +27,9 @@ const Membership = () => {
           onClick={manageSubscription}
         >
           {isBillingLoading ? (
-            <Loader color="dark:fill-[#e50914]" width="7" height="7" />
+            <div className="w-full h-7 relative">
+              <Loader color="dark:fill-[#e50914]" width="7" height="7" />
+            </div>
           ) : (
             "Cancel Membership"
           )}
@@ -65,12 +65,12 @@ const Membership = () => {
               {subscription?.current_period_end}
             </p>
           </div>
-          <div className="md:text-right">
-            <p className="membershipLink">Manage payment info</p>
-            <p className="membershipLink">Add backup payment method</p>
-            <p className="membershipLink">Billing Details</p>
-            <p className="membershipLink">Change billing day</p>
-          </div>
+          {/* <div className="md:text-right"> */}
+          {/* <p className="membershipLink">Manage payment info</p>
+            <p className="membershipLink">Add backup payment method</p> */}
+          {/* <p className="membershipLink">Billing Details</p> */}
+          {/* <p className="membershipLink">Change billing day</p> */}
+          {/* </div> */}
         </div>
       </div>
     </div>

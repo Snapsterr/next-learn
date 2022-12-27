@@ -10,13 +10,12 @@ const payments = getStripePayments(app, {
   customersCollection: "customers"
 })
 
-const loadCheckout = async (priceId: string) => {
-  await createCheckoutSession(payments, {
+const loadCheckout = async (priceId: string) => createCheckoutSession(payments, {
     price: priceId,
     success_url: window.location.origin,
     cancel_url: window.location.origin,
   }).then((snapshot) => window.location.assign(snapshot.url)).catch((error) => console.log(error.message))
-}
+
 
 const goToBillingPortal = async () => {
   const instance = getFunctions(app, 'us-central1')

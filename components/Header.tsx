@@ -3,9 +3,20 @@ import { useEffect, useState } from "react"
 import { BasicMenu } from "./BasicMenu"
 import SearchField from "./SearchField"
 import Notification from "./Notification"
+import useSubscription from "../hooks/useSubscription"
+import { useAuth } from "../hooks/useAuth"
+import { Product } from "@stripe/firestore-stripe-payments"
 
-const Header = () => {
+interface Props {
+  products: Product[]
+}
+
+const Header = ({ products }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false)
+
+  const { user } = useAuth()
+
+  const subscription = useSubscription(user)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,7 +67,13 @@ const Header = () => {
 
       <div className="flex items-center space-x-4 text-sm font-light">
         <SearchField />
-        <p className="hidden lg:inline">Kids</p>
+        <p className="hidden lg:inline">
+          {
+            products.filter(
+              (product) => product.id === subscription?.product
+            )[0]?.name
+          }
+        </p>
         <Notification />
         <Link href="/account">
           <img

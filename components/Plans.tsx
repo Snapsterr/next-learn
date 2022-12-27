@@ -26,7 +26,7 @@ const Plans = ({ products }: Props) => {
   return (
     <div>
       <Head>
-        <title>next app learning</title>
+        <title>Subscription plans</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 

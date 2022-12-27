@@ -17,6 +17,7 @@ const MembershipLink = ({ membershipText, updateType, inputType }: Props) => {
     e.preventDefault()
     setIsOpen(false)
   }
+
   return (
     <>
       <p className="membershipLink" onClick={() => setIsOpen(true)}>
@@ -28,6 +29,7 @@ const MembershipLink = ({ membershipText, updateType, inputType }: Props) => {
         isOpen={isOpen}
         inputType={inputType}
         closeModal={closeModal}
+        setOpen={setIsOpen}
       />
     </>
   )
