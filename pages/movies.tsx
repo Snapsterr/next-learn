@@ -12,13 +12,16 @@ import PaginationRange from "../components/PaginationRange"
 import useNavigation from "../hooks/useNavigation"
 import useFetchingByNavitation from "../hooks/useFetchingByNavitation"
 import Loader from "../components/Loader"
+import { getProducts, Product } from "@stripe/firestore-stripe-payments"
+import payments from "../lib/stripe"
 
 interface Props {
   movies: Movie[]
   totalPages: number
+  products: Product[]
 }
 
-const Movies = ({ movies, totalPages }: Props) => {
+const Movies = ({ movies, totalPages, products }: Props) => {
   const showModal = useRecoilValue(modalState)
   const movie = useRecoilValue(movieState)
 
@@ -42,7 +45,7 @@ const Movies = ({ movies, totalPages }: Props) => {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <Header products={products} />
       <PageTitle title="Top Rated Movies" />
       <main>
         {loading ? (
@@ -72,6 +75,12 @@ const Movies = ({ movies, totalPages }: Props) => {
 export default Movies
 
 export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message))
   const popularMovies = await fetch(requests.fetchPopularMovies).then((res) =>
     res.json()
   )
@@ -80,6 +89,7 @@ export const getServerSideProps = async () => {
     props: {
       movies: popularMovies.results,
       totalPages: popularMovies.total_pages,
+      products,
     },
   }
 }

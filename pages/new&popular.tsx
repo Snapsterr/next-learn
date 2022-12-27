@@ -11,13 +11,16 @@ import PaginationRange from "../components/PaginationRange"
 import useNavigation from "../hooks/useNavigation"
 import useFetchingByNavitation from "../hooks/useFetchingByNavitation"
 import Loader from "../components/Loader"
+import { getProducts, Product } from "@stripe/firestore-stripe-payments"
+import payments from "../lib/stripe"
 
 interface Props {
   totalPages: number
   movies: Movie[]
+  products: Product[]
 }
 
-const NewAndPopular = ({ movies, totalPages }: Props) => {
+const NewAndPopular = ({ movies, totalPages, products }: Props) => {
   const showModal = useRecoilValue(modalState)
   const movie = useRecoilValue(movieState)
   const { trending } = links
@@ -41,7 +44,7 @@ const NewAndPopular = ({ movies, totalPages }: Props) => {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <Header products={products} />
       <PageTitle title="New & Popular" />
       <main>
         {loading ? (
@@ -71,6 +74,12 @@ const NewAndPopular = ({ movies, totalPages }: Props) => {
 export default NewAndPopular
 
 export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message))
   const newAndPopular = await fetch(requests.fetchTrending).then((res) =>
     res.json()
   )
@@ -79,6 +88,7 @@ export const getServerSideProps = async () => {
     props: {
       movies: newAndPopular.results,
       totalPages: newAndPopular.total_pages,
+      products,
     },
   }
 }

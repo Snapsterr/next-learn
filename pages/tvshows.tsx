@@ -12,13 +12,16 @@ import PaginationRange from "../components/PaginationRange"
 import useNavigation from "../hooks/useNavigation"
 import useFetchingByNavitation from "../hooks/useFetchingByNavitation"
 import Loader from "../components/Loader"
+import { getProducts, Product } from "@stripe/firestore-stripe-payments"
+import payments from "../lib/stripe"
 
 interface Props {
   movies: Movie[]
   totalPages: number
+  products: Product[]
 }
 
-const TVShows = ({ movies, totalPages }: Props) => {
+const TVShows = ({ movies, totalPages, products }: Props) => {
   const showModal = useRecoilValue(modalState)
   const movie = useRecoilValue(movieState)
 
@@ -42,7 +45,7 @@ const TVShows = ({ movies, totalPages }: Props) => {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <Header products={products} />
       <PageTitle title="TV Shows" />
       <main>
         {loading ? (
@@ -72,12 +75,19 @@ const TVShows = ({ movies, totalPages }: Props) => {
 export default TVShows
 
 export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message))
   const tvShows = await fetch(requests.fetchTVShows).then((res) => res.json())
 
   return {
     props: {
       movies: tvShows.results,
       totalPages: tvShows.total_pages,
+      products,
     },
   }
 }

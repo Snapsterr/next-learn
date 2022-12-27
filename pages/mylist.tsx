@@ -9,8 +9,14 @@ import PageTitle from "../components/PageTitle"
 import useList from "../hooks/useList"
 import { useAuth } from "../hooks/useAuth"
 import { ExclamationCircleIcon } from "@heroicons/react/outline"
+import { getProducts, Product } from "@stripe/firestore-stripe-payments"
+import payments from "../lib/stripe"
 
-const MyList = () => {
+interface Props {
+  products: Product[]
+}
+
+const MyList = ({ products }: Props) => {
   const [isEmpty, setIsEmpty] = useState<boolean>(true)
   const showModal = useRecoilValue(modalState)
   const movie = useRecoilValue(movieState)
@@ -36,7 +42,7 @@ const MyList = () => {
         </title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Header />
+      <Header products={products} />
       <PageTitle title="Favourites" />
       {!isEmpty ? (
         <main>
@@ -58,3 +64,18 @@ const MyList = () => {
 }
 
 export default MyList
+
+export const getServerSideProps = async () => {
+  const products = await getProducts(payments, {
+    includePrices: true,
+    activeOnly: true,
+  })
+    .then((res) => res)
+    .catch((error) => console.log(error.message))
+
+  return {
+    props: {
+      products,
+    },
+  }
+}
